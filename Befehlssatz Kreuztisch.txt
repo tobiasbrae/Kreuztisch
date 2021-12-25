@@ -1,0 +1,63 @@
+Kommunikationsparameter
+
+Zur Kommunikation wird eine serielle Schnittstelle mit folgenden Parametern verwendet:
+		 Baudrate: 76800
+		 Synchron: Nein
+		  Parität: Nein
+ Anzahl Stop-Bits: 1
+Anzahl Daten-Bits: 8
+
+	Ziel-Puffer: 100
+	
+Für alle Parameter gilt big endian.
+
+Befehlssatz Kreuztisch
+
+"b<acc>e"
+->Einstellen der Beschleunigung
+acc (int8): Die Beschleunigung in mms^-2
+
+"ce" (clear)
+->Setzt den Koordinatenpuffer zurück
+
+"d<duration>e" (delay)
+->Pause zwischen zwei Fahrbefehlen, dient dazu, ein Verfahren des Stiftes abzuwarten
+duration (int16): Wartezeit in ms
+
+"g<x><y><z><vel>e" (go)
+->Lineares Verfahren zu den angegebenen Zielkoordinaten	
+!Die letzte Ziffer wird als Zehntel interpretiert. 123 -> 12.3mm!
+x (int16): Zielkoordinate x-Achse [mm]
+y (int16): Zielkoordinate y-Achse [mm]
+z (int16): Zielkoordinate z-Achse(Stift) [0;10], bei 10 ist der Stift unten
+vel (int16): Sollgeschwindigkeit [mm/s]
+
+"he" (hold)
+->Veranlasst, dass der Kopf anhält. Der Puffer wird nicht geleert. Ein "se" lässt ihn wieder losfahren.
+
+"je" (...)
+->Gibt den Durchschnitt der Regelabweichung Motor-Soll-Geschwindigkeit <> Motor-Ist-Geschiwndigkeit aus.
+
+"ke" (...)
+->Gibt die Ausgänge aller Regler aus.
+
+"le" (lift)
+->Hebt den Stift an.
+
+"oe" (origin)
+->Setzt den Koordinatenpuffer zurück und verfährt den Kopf zum Ursprung
+
+"p<axis><kp><ki><kd><mul>e" (parameters)
+->Wird verwendet um die Reglerparameter der Achs-Motoren einzustellen.
+Besonderheit: Die Parameter werden durch 100 geteilt, d.h. aus 123 wird 1.23 als Parameter.
+axis (uint8): Die Achse ['x';'y']
+kp (uint8): Verstärkungsfaktor P-Anteil des PID-Reglers
+ki (uint8): Verstärkungsfaktor I-Anteil des PID-Reglers
+kd (uint8): Verstärkungsfaktor D-Anteil des PID-Reglers
+mul (uint8): Multiplikator für Vorladung
+
+"re" (recalibrate)
+->Führt eine erneute Kalibrierung durch. Dabei wird der Koordinatenpuffer zurückgesetzt.
+
+"se" (start)
+->Veranlasst, dass der Kopf mit dem Abfahren der Koordinaten beginnt.
